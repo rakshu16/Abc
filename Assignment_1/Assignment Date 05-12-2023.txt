@@ -1,0 +1,339 @@
+					"Assignment-1 Date: 05/12/2023"
+-------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------------
+
+				ConstructorBasedCdApplication.java
+|-------------------------------------------------------------------------------------|
+
+package com.stackroute;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class ConstructorBasedCdApplication {
+
+	public static void main(String[] args) {
+
+		SpringApplication.run(ConstructorBasedCdApplication.class, args);
+	}
+
+}
+
+
+				Controller.java
+|-------------------------------------------------------------------------------------|
+
+package com.stackroute.controller;
+
+import com.stackroute.service.OrderService;
+import com.stackroute.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class Controller {
+    private final UserService userService;
+    private final OrderService orderService;
+
+    @Autowired
+    public Controller(UserService userService, OrderService orderService) {
+        this.userService = userService;
+        this.orderService = orderService;
+    }
+
+    @GetMapping("/user-details")
+    public String getUserDetails() {
+        return userService.getUserDetails();
+    }
+
+    @GetMapping("/user-orders")
+    public String getUserOrders() {
+        return userService.getUserOrders();
+    }
+
+    @GetMapping("/order-user")
+    public String getOrderUser() {
+        return orderService.getOrderUser();
+    }
+}
+
+
+				OrderService.java
+|-------------------------------------------------------------------------------------|
+
+package com.stackroute.service;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Service;
+
+/**
+ * @Service indicates annotated class is a service which hold business logic in the Service layer
+ */
+@Service
+public class OrderService {
+
+    /**
+     * declare a userService variable as private final
+     */
+	
+	private final UserService userService;
+
+    /**
+     * Autowire the UserService bean using constructor-based injection
+     * use @Lazy annotation to load the UserService bean lazily
+     */
+	@Autowired
+	public OrderService(@Lazy UserService userService) {
+		this.userService=userService;
+	}
+
+
+    /**
+     * Retrieves a list of orders, and return the list
+     */
+    public List<String> getOrders() {
+        // Simulate fetching orders
+        List<String> orderList = new ArrayList<>();
+        orderList.add("Order1");
+        orderList.add("Order2");
+        return orderList;
+    }
+
+    /**
+     * Retrieves the user associated with an order and returns a formatted string with the user details.
+     */
+    public String getOrderUser() {
+        // return String with user details as Ordered user: userService.getUserDetails();
+    	return "Ordered user: "+userService.getUserDetails();
+    }
+}
+
+
+				UserService.java
+|-------------------------------------------------------------------------------------|
+
+package com.stackroute.service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Service;
+
+/**
+ * @Service indicates annotated class is a service which hold business logic in the Service layer
+ */
+@Service
+public class UserService {
+    private String userName="John Doe";
+    /**
+     * declare a orderService variable as private final
+     */
+    
+    private final OrderService orderService;
+
+    /**
+     * Autowire the OrderService bean using constructor-based injection
+     */
+    @Autowired
+    public UserService(@Lazy OrderService ordedrService) {
+    	this.orderService=ordedrService;
+    }
+    
+
+
+    /**
+     return user details
+     */
+    public String getUserDetails() {
+        // Simulate fetching user details
+        return this.userName;
+    }
+
+    /**
+     * return the user's order details.
+     */
+    public String getUserOrders() {
+        // return String with user details as User orders: orderService.getOrders()
+    	return "User orders: "+orderService.getOrders();
+    }
+}
+
+----------------------------------------------------------------XX--XX---------------------------------------------------------------
+----------------------------------------------------------------XX--XX---------------------------------------------------------------
+
+
+					"Assignment-2 Date: 05/12/2023"
+-------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------------
+
+
+				OrderSettersApplication.java
+|-------------------------------------------------------------------------------------|
+
+package com.example.demo;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class OrderSettersApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(OrderSettersApplication.class, args);
+	}
+
+}
+
+
+				Controller.java
+|-------------------------------------------------------------------------------------|
+
+package com.example.demo.controller;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import com.example.demo.service.OrderService;
+import com.example.demo.service.UserService;
+
+@RestController
+//@RequestMapping("/api/v1.0/orders")
+public class Controller {
+private final UserService userService;
+private final OrderService orderService;
+
+@Autowired
+public Controller(UserService userService, OrderService orderService) {
+	this.userService = userService;
+	this.orderService = orderService;
+	}
+
+@GetMapping("/user-details")
+public String getUserDetails() {
+	return userService.getUserDetails();
+	}
+
+@GetMapping("/user-orders")
+public String getUserOrders() {
+	return userService.getUserOrders();
+	}
+
+@GetMapping("/order-user")
+public String getOrderUser() {
+	return orderService.getOrderUser();
+	}
+}
+
+
+				OrderService.java
+|-------------------------------------------------------------------------------------|
+
+package com.example.demo.service;
+
+
+import java.util.ArrayList;
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Service;
+
+/**
+ * @Service indicates annotated class is a service which hold business logic in the Service layer
+ */
+@Service
+public class OrderService {
+
+    /**
+     * declare a userService variable as private final
+     */
+	
+	private UserService userService;
+
+    /**
+     * Autowire the UserService bean using constructor-based injection
+     * use @Lazy annotation to load the UserService bean lazily
+     * @return 
+     */
+	@Autowired
+	public void setOrderService(@Lazy UserService userService) {
+		this.userService=userService;
+	}
+
+    /**
+     * Retrieves a list of orders, and return the list
+     */
+    public List<String> getOrders() {
+        // Simulate fetching orders
+        List<String> orderList = new ArrayList<>();
+        orderList.add("Order1");
+        orderList.add("Order2");
+        return orderList;
+    }
+
+    /**
+     * Retrieves the user associated with an order and returns a formatted string with the user details.
+     */
+    public String getOrderUser() {
+        // return String with user details as Ordered user: userService.getUserDetails();
+    	return "Ordered user: "+userService.getUserDetails();
+    }
+}
+
+				UserService.java
+|-------------------------------------------------------------------------------------|
+
+package com.example.demo.service;
+
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Service;
+
+/**
+ * @Service indicates annotated class is a service which hold business logic in the Service layer
+ */
+
+@Service
+public class UserService {
+    private String userName="Thomas,Alph";
+    /**
+     * declare a orderService variable as private final
+     */
+    
+    private OrderService orderService;
+
+    /**
+     * Autowire the OrderService bean using constructor-based injection
+     * @return 
+     */
+    @Autowired
+    public void setUserService(@Lazy OrderService ordedrService) {
+    	this.orderService=ordedrService;
+    }
+    
+   
+
+
+    /**
+     return user details
+     */
+    public String getUserDetails() {
+        // Simulate fetching user details
+        return this.userName;
+    }
+
+    /**
+     * return the user's order details.
+     */
+    public String getUserOrders() {
+        // return String with user details as User orders: orderService.getOrders()
+    	return "User orders: "+orderService.getOrders();
+    }
+    
+}
+

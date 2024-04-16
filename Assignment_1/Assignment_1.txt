@@ -1,0 +1,288 @@
+					"Assignment_1"
+-------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------------
+
+				Main.java
+|-------------------------------------------------------------------------------------|
+
+package assignment_1;
+
+import java.util.ArrayList;
+import java.util.List;
+ 
+// Notification interface representing a basic notification
+interface Notification {
+    void send();
+}
+ 
+// Concrete class representing Push Notifications
+class PushNotification implements Notification {
+    private String message;
+ 
+    public PushNotification(String message) {
+        this.message = message;
+    }
+ 
+    @Override
+    public void send() {
+        System.out.println("Sending push notification: " + message);
+    }
+}
+ 
+// Concrete class representing Email Notifications
+class EmailNotification implements Notification {
+    private String subject;
+    private String body;
+ 
+    public EmailNotification(String subject, String body) {
+        this.subject = subject;
+        this.body = body;
+    }
+ 
+    @Override
+    public void send() {
+        System.out.println("Sending email notification: " + subject + " - " + body);
+    }
+}
+ 
+// Concrete class representing In-App Messages
+class InAppMessage implements Notification {
+    private String content;
+ 
+    public InAppMessage(String content) {
+        this.content = content;
+    }
+ 
+    @Override
+    public void send() {
+        System.out.println("Showing in-app message: " + content);
+    }
+}
+ 
+// User class representing user preferences and behavior
+class User {
+    private String userId;
+    List<Notification> notifications = new ArrayList<>();
+ 
+    public User(String userId) {
+        this.userId = userId;
+    }
+ 
+    public void addNotification(Notification notification) {
+        notifications.add(notification);
+    }
+ 
+    public void updatePreferences() {
+        // Implement logic to update user preferences
+    }
+ 
+    public void updateInteractionHistory() {
+        // Implement logic to update user interaction history
+    }
+}
+ 
+// NotificationService class responsible for managing and delivering notifications
+class NotificationService {
+    private List<User> users = new ArrayList<>();
+ 
+    public void addUser(User user) {
+        users.add(user);
+    }
+ 
+    public void sendNotifications() {
+        for (User user : users) {
+            for (Notification notification : user.notifications) {
+                notification.send();
+            }
+        }
+    }
+}
+ 
+// NotificationFactory class for creating different types of notifications
+class NotificationFactory {
+    public static Notification createNotification(String type, String content) {
+        switch (type.toLowerCase()) {
+            case "push":
+                return new PushNotification(content);
+            case "email":
+                // Extract subject and body from content
+                // Example content format: "Subject: <subject>, Body: <body>"
+                String[] parts = content.split(", ");
+                String subject = parts[0].substring("Subject: ".length());
+                String body = parts[1].substring("Body: ".length());
+                return new EmailNotification(subject, body);
+            case "inapp":
+                return new InAppMessage(content);
+            default:
+                throw new IllegalArgumentException("Invalid notification type");
+        }
+    }
+}
+ 
+// Main class for testing the notification system
+public class Main {
+    public static void main(String[] args) {
+        // Create users
+        User user1 = new User("user1");
+        User user2 = new User("user2");
+ 
+        // Add users to the notification service
+        NotificationService notificationService = new NotificationService();
+        notificationService.addUser(user1);
+        notificationService.addUser(user2);
+ 
+        // Create and add notifications to users
+        user1.addNotification(NotificationFactory.createNotification("push", "New update available"));
+        user1.addNotification(NotificationFactory.createNotification("email", "Subject: Important News, Body: Read me"));
+        user2.addNotification(NotificationFactory.createNotification("inapp", "Special offer inside"));
+ 
+        // Send notifications
+        notificationService.sendNotifications();
+    }
+}
+
+-------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------------
+
+				EcommercePlatform.java
+|-------------------------------------------------------------------------------------|
+
+package composite;
+
+public class EcommercePlatform {
+    public void createProductHierarchy() {
+        
+        Product p1 = new Product("Sofa", 25000);
+        Product p2 = new Product("Regfrigerator", 30000);
+
+        ProductCatalog gadgetsCatalog = new ProductCatalog("Gadgets");
+        gadgetsCatalog.addItem(p1);
+
+        ProductCatalog appliancesCatalog = new ProductCatalog("Appliances");
+        appliancesCatalog.addItem(p2);
+
+        ProductCatalog remoteCatalog = new ProductCatalog("Remote Catalog");
+        remoteCatalog.addItem(gadgetsCatalog);
+        remoteCatalog.addItem(appliancesCatalog);
+
+        remoteCatalog.display();
+    }
+
+    public static void main(String[] args) {
+        EcommercePlatform ecommercePlatform = new EcommercePlatform();
+        ecommercePlatform.createProductHierarchy();
+    }
+}
+
+
+				Product.java
+|-------------------------------------------------------------------------------------|
+
+package composite;
+
+public class Product implements ProductCategory {
+    private String name;
+    private double price;
+
+    public Product(String name, double price) {
+        this.name = name;
+        this.price = price;
+    }
+
+    @Override
+    public void display() {
+        System.out.println("Product: " + name + ", Price: " + price);
+    }
+}
+
+
+				ProductCatalog.java
+|-------------------------------------------------------------------------------------|
+
+package composite;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class ProductCatalog implements ProductCategory {
+    private String name;
+    private List<ProductCategory> subProduct = new ArrayList<>();
+
+    public ProductCatalog(String name) {
+        this.name = name;
+    }
+
+    public void addItem(ProductCategory item) {
+        subProduct.add(item);
+    }
+
+    public void removeItem(ProductCategory item) {
+        subProduct.remove(item);
+    }
+
+    @Override
+    public void display() {
+        System.out.println("Category: " + name);
+        for (ProductCategory sub : subProduct) {
+            sub.display();
+        }
+    }
+}
+
+
+				ProductCategory.java
+|-------------------------------------------------------------------------------------|
+
+package composite;
+
+public interface ProductCategory {
+	void display();
+}
+
+-------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------------
+
+				Logger.java
+|-------------------------------------------------------------------------------------|
+
+package com.assignments;
+
+public class Logger {
+	//create a private instance of class
+	private static   Logger instance; // The volatile keyword ensures visibility across threads
+	private Logger() {
+//		private constructor
+	}
+//	create getinstance methods and return a object
+	public static Logger getInstance() {
+		if(instance==null) {
+			synchronized (Logger.class) {
+				if (instance == null) {
+					instance = new Logger();
+					}
+				}
+			}
+		return instance;
+		}
+	}
+
+
+				MainClass.java
+|-------------------------------------------------------------------------------------|
+
+package com.assignments;
+
+public class MainClass {
+
+	public static void main(String[] args) {
+		Logger l1=Logger.getInstance();
+		System.out.println(l1.hashCode());
+		Logger l2=Logger.getInstance();
+		System.out.println(l2.hashCode());
+		Logger l3=Logger.getInstance();
+		System.out.println(l3.hashCode());
+		}
+	}
+
+-------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------------

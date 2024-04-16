@@ -1,0 +1,94 @@
+				EcommercePlatform.java
+|-------------------------------------------------------------------------------------|
+
+package composite;
+
+public class EcommercePlatform {
+    public void createProductHierarchy() {
+        
+        Product p1 = new Product("Sofa", 25000);
+        Product p2 = new Product("Regfrigerator", 30000);
+
+        ProductCatalog gadgetsCatalog = new ProductCatalog("Gadgets");
+        gadgetsCatalog.addItem(p1);
+
+        ProductCatalog appliancesCatalog = new ProductCatalog("Appliances");
+        appliancesCatalog.addItem(p2);
+
+        ProductCatalog remoteCatalog = new ProductCatalog("Remote Catalog");
+        remoteCatalog.addItem(gadgetsCatalog);
+        remoteCatalog.addItem(appliancesCatalog);
+
+        remoteCatalog.display();
+    }
+
+    public static void main(String[] args) {
+        EcommercePlatform ecommercePlatform = new EcommercePlatform();
+        ecommercePlatform.createProductHierarchy();
+    }
+}
+
+
+				Product.java
+|-------------------------------------------------------------------------------------|
+
+package composite;
+
+public class Product implements ProductCategory {
+    private String name;
+    private double price;
+
+    public Product(String name, double price) {
+        this.name = name;
+        this.price = price;
+    }
+
+    @Override
+    public void display() {
+        System.out.println("Product: " + name + ", Price: " + price);
+    }
+}
+
+
+				ProductCatalog.java
+|-------------------------------------------------------------------------------------|
+
+package composite;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class ProductCatalog implements ProductCategory {
+    private String name;
+    private List<ProductCategory> subProduct = new ArrayList<>();
+
+    public ProductCatalog(String name) {
+        this.name = name;
+    }
+
+    public void addItem(ProductCategory item) {
+        subProduct.add(item);
+    }
+
+    public void removeItem(ProductCategory item) {
+        subProduct.remove(item);
+    }
+
+    @Override
+    public void display() {
+        System.out.println("Category: " + name);
+        for (ProductCategory sub : subProduct) {
+            sub.display();
+        }
+    }
+}
+
+
+				ProductCategory.java
+|-------------------------------------------------------------------------------------|
+
+package composite;
+
+public interface ProductCategory {
+	void display();
+}

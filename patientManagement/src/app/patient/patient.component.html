@@ -1,0 +1,89 @@
+<div class="container mt-3">
+    <button type="submit"  (click)="toggle()" class="btn btn-primary">Admin</button>
+        <button type="submit" (click)="toggle()"    class="btn btn-primary">guest</button>
+    <div class="mb-3">
+      <label for="userType">User Type:</label>
+      <select id="userType" [(ngModel)]="isAdmin" class="form-control">
+        <option value="false">Guest</option>
+        <option value="true">Admin</option>
+        
+      </select>
+
+    </div>
+    <div *ngIf="isAdmin">
+        <form (ngSubmit)="addPatient()" #patientForm="ngForm">
+            <div class="mb-3">
+              <label for="name">Name:</label>
+              <input type="text" id="name" name="name" [(ngModel)]="newPatient.name" class="form-control" required>
+            </div>
+            <div class="mb-3">
+              <label for="disease">Disease:</label>
+              <input type="text" id="disease" name="disease" [(ngModel)]="newPatient.disease" class="form-control" required>
+            </div>
+            <div class="mb-3">
+              <label for="doc">Doctor:</label>
+              <input type="text" id="doc" name="doc" [(ngModel)]="newPatient.doc" class="form-control" required>
+            </div>
+            <div class="mb-3">
+              <label for="stage">Stage:</label>
+              <select id="stage" name="stage" [(ngModel)]="newPatient.stage" class="form-control" required>
+                <option value="normal">Normal</option>
+                <option value="severe">Severe</option>
+                <option value="critical">Critical</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Add Patient</button>
+          </form>
+    </div>
+
+
+    <div class="mb-3">
+        <label for="filterCriteria">Filter Criteria:</label>
+        <select id="filterCriteria" [(ngModel)]="filterCriteria" class="form-control">
+          <option value="all">All</option>
+          <option value="name">By Name</option>
+          <option value="doc">By Doctor</option>
+          <option value="stage">By Stage</option>
+        </select>
+      </div>
+      <div class="mb-3" *ngIf="filterCriteria !== 'all'">
+        <label for="filterValue">Filter Value:</label>
+        <input type="text" id="filterValue" name="filterValue" [(ngModel)]="filterValue" class="form-control">
+      </div>
+      <button type="button" (click)="filterPatients()" class="btn btn-primary">Filter</button>
+      
+     
+      
+      
+
+
+
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Disease</th>
+          <th>Doctor</th>
+          <th>Stage</th>
+          <th *ngIf="isAdmin">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let patient of patients">
+          <td>{{ patient.id }}</td>
+          <td>{{ patient.name }}</td>
+          <td>{{ patient.disease }}</td>
+          <td>{{ patient.doc }}</td>
+          <td [ngClass]="{'table-success': patient.stage === 'normal', 'table-warning': patient.stage === 'severe', 'table-danger': patient.stage === 'critical'}">{{ patient.stage }}</td>
+          <td *ngIf="isAdmin">
+            <!-- Add update and delete buttons here -->
+            <button class="btn btn-sm btn-primary">Update</button> 
+            <button (click)="deletePat(patient.id)" class="btn btn-sm btn-danger">Delete</button>
+          </td>
+          
+        </tr>
+      </tbody>
+    </table>
+  </div>

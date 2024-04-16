@@ -1,0 +1,41 @@
+				Logger.java
+|-------------------------------------------------------------------------------------|
+
+package com.assignments;
+
+public class Logger {
+	//create a private instance of class
+	private static   Logger instance; // The volatile keyword ensures visibility across threads
+	private Logger() {
+//		private constructor
+	}
+//	create getinstance methods and return a object
+	public static Logger getInstance() {
+		if(instance==null) {
+			synchronized (Logger.class) {
+				if (instance == null) {
+					instance = new Logger();
+					}
+				}
+			}
+		return instance;
+		}
+	}
+
+
+				MainClass.java
+|-------------------------------------------------------------------------------------|
+
+package com.assignments;
+
+public class MainClass {
+
+	public static void main(String[] args) {
+		Logger l1=Logger.getInstance();
+		System.out.println(l1.hashCode());
+		Logger l2=Logger.getInstance();
+		System.out.println(l2.hashCode());
+		Logger l3=Logger.getInstance();
+		System.out.println(l3.hashCode());
+		}
+	}
